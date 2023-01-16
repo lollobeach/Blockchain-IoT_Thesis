@@ -4,7 +4,7 @@
 #include <ArduinoJson.h>
 
 // insert the Ethereum node and the port
-const char server[] = /* Ethereum node*/;
+const char server[] = /* Ethereum node */;
 const int port = /* port */;
 
 WiFiClient wifi;

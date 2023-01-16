@@ -12,7 +12,7 @@ void setup() {
   connectWPA2();
   
   // you encode the data according to Contract ABI specification
-  String dataField = createDataField(/* latitude, longitude, altitude, unixTime, device, fishCode, date*/);
+  String dataField = createDataField(/* latitude, longitude, altitude, unixTime, device, fishCode, date */);
 
   // you create the raw transaction with data parameter and own private key
   String rawTx = createRawTransaction(dataField, /* insert own private key */);

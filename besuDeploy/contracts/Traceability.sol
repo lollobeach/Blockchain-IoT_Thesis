@@ -32,7 +32,7 @@ contract Traceability {
 
 
     function addDevice(bytes32 _idDevice, address _deviceAddress) public {
-        require(msg.sender == /* Admin address */, "Only admin can add addresses");
+        require(msg.sender == /* Admin public address */, "Only admin can add addresses");
         require(devices[_deviceAddress] == false, "This device already exist");
 
         devices[_deviceAddress] = true;

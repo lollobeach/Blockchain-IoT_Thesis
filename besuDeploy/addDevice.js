@@ -18,7 +18,7 @@ const contract = new web3.eth.Contract(
 
 const index = web3.utils.utf8ToHex('8965')
 
-const tx = contract.methods.addDevice(index, /* address to be added */)
+const tx = contract.methods.addDevice(index, /* public address of the device to be added */)
 
 web3.eth.getBlock('latest', async (err, block) => {
     if (err) {

@@ -15,7 +15,7 @@
  * Output:
  *  - String, hexadecimal string of raw transaction
 */
-String createRawTransaction(String data, char* privateKey);
+String createRawTransaction(String data, String privateKey);
 
 /**
  * Method used by createRawTransaction to applied the ECDSA

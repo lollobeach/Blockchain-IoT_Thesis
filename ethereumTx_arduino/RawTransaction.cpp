@@ -3,11 +3,10 @@
 #include "RLP.h"
 #include "RpcRequest.h"
 #include <keccak.h>
-#include <secp256k1.h>
 #include <secp256k1_recovery.h>
 
 
-String createRawTransaction(String data, char* privateKey) {
+String createRawTransaction(String data, String privateKey) {
   // the public address to be added must match the privateKey parameter 
   String nonce = getNonce(/* insert own public address */);
   Serial.print("Nonce: ");
