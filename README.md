@@ -1,6 +1,6 @@
 # Blockchain-IoT_Thesis
 
-This is a project in wich the **Blockchain** and **IoT** are used to safely track Cetara anchovies.
+This is a project in which the **Blockchain** and **IoT** are used to safely track Cetara anchovies.
 The work was carried out in collaboration with *BilancioCO2 Zero*, a Unicam spinoff, and *Silthenia S.r.l*, a startup from Montedinove (AP). 
 
 It is complementary to that of Riccardo Petracci, a fellow magistral that has developed an IoT device that records the various GPS informations and uploads it to a Database.
@@ -50,4 +50,73 @@ or the `ssid`, `password` and `username` in `connectWPA2Enterprise()`.
   const char* password = "";
 ```
 
-## TO BE FINISHED
+- In [RawTransaction.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/RawTransaction.cpp) it is necessary to add:
+
+the `public address` in `String createRawTransaction(String data, String privateKey)`. The public address must match the `privateKey`;
+
+```
+  String nonce = getNonce(/* public address */);
+```
+
+the `contract address` and `Chain Id` must also be added in this method;
+
+```
+  Tx tx = {nonce, "0x", gasLimit, /* contract address */, "0x", data, /* Chain ID */, "0x", "0x"};
+```
+
+in `String ecdsaSignature(String hash, String privateKey, Tx* tx)`, instead, it is sufficient to set the `Chain ID`.
+
+```
+  int _v = /* Chain ID */ * 2 + 35 + recid;
+```
+
+- In [RpcRequest.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/RpcReqeust.cpp):
+
+it's good to enter the `Ethereum node` and the `port` to which send Json-RPC request.
+
+```
+  const char server[] = /* Ethereum node */;
+  const int port = /* port */;
+```
+
+- At the end you must modified the file [ethereumTx_arduino.ino](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/ethereumTx_arduino.ino):
+
+first you have to connect the board to WiFi with `connectWPA2()` or `connectWPA2Enterprise()` and then create the `dataField` with information needed.
+
+```
+  String dataField = createDataField(/* latitude, longitude, altitude, unixTime, device, fishCode, date */);
+```
+
+This variable, with the `private key` is used to create the raw transaction
+
+```
+  String rawTx = createRawTransaction(dataField, /* insert own private key */);
+```
+
+to be sent with `sendRawTransaction(rawTx)` that return the transaction hash if there isn't problems.
+
+___
+
+For testing with `web3.js` it is necessary to edit the [.env](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/besuDeploy/.env) file:
+
+```
+  HOST=#ethereum_node
+
+  CONTRACT_ADDRESS=#contract_address
+
+  ADMIN_KEY=#private_key_admin
+  FIRST_DEVICE=#private_key_firstDevice
+  SECOND_DEVICE=#private_key_secondDevice
+```
+
+`FIRST_DEVICE` and `SECOND_DEVICE` are the device added for the tracking with:
+
+```
+  const tx = contract.methods.addDevice(index, /* public address of the device to be added */)
+```
+
+The `ADMIN_KEY` must match the public address in the method `addDevice(bytes32 _idDevice, address _deviceAddress)` of the Solidity [Smart Contract](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/besuDeploy/contracts/Traceability.sol):
+
+```
+  require(msg.sender == /* Admin public address */, "Only admin can add addresses");
+```
