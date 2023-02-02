@@ -27,7 +27,7 @@ A module was written for the *RLP* encoding and an other for the signing mechani
 
 The external library used for signature are:
 - [keccak.k](https://github.com/stbrumme/hash-library/blob/master/keccak.h) for *Keccak256* hash;
-- [secp256k1_recovery.h](https://github.com/bitcoin-core/secp256k1/blob/master/include/secp256k1_recovery.h) for signature with *secp256k1* curve of ECDSA.
+- [secp256k1_recovery.h](https://github.com/diybitcoinhardware/secp256k1-embedded) for signature with *secp256k1* curve of ECDSA.
 
 ___
 
