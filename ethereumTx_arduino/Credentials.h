@@ -1,7 +1,16 @@
 #ifndef Credentials_h
 #define Credentials_h
 
-void connectWPA2Mobile();
-void connectWPA2Home();
+/**
+ * Method for connecting to the WiFi WPA2 network.
+ * Credentials must be entered.
+*/
+void connectWPA2();
+
+/**
+ * Method for connecting to the WiFi WPA2 Enterprise network.
+ * Credentials must be entered.
+*/
+void connectWPA2Enterprise();
 
 #endif

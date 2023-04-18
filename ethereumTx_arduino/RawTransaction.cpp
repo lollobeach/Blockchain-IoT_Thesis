@@ -2,13 +2,13 @@
 #include "Tx.h"
 #include "RLP.h"
 #include "RpcRequest.h"
-#include "env.h"
 #include <keccak.h>
 #include <secp256k1_recovery.h>
 
 
 String createRawTransaction(String data, String privateKey) {
-  String nonce = getNonce(WALLET_ADDRESS);
+  // the public address to be added must match the privateKey parameter 
+  String nonce = getNonce(/* insert own public address */);
   Serial.print("Nonce: ");
   Serial.println(nonce);
   
@@ -16,7 +16,7 @@ String createRawTransaction(String data, String privateKey) {
   Serial.print("Gas Limit: ");
   Serial.println(gasLimit);
 
-  Tx tx = {nonce, "0x", gasLimit, CONTRACT_ADDRESS, "0x", data, String(CHAIN_ID, HEX), "0x", "0x"};
+  Tx tx = {nonce, "0x", gasLimit, /* contract address */, "0x", data, /* Chain ID */, "0x", "0x"};
   
   String txEncoded = rlpEncodeTx(&tx);
   String keccakHash = generateKeccakHash(txEncoded);
@@ -43,7 +43,7 @@ String ecdsaSignature(String hash, String privateKey, Tx* tx) {
   
   secp256k1_ecdsa_recoverable_signature_serialize_compact(ctx, serialized_signature, &recid, &recoverySig);
 
-  int _v = CHAIN_ID * 2 + 35 + recid;
+  int _v = /* Chain ID */ * 2 + 35 + recid;
   
   String r = find_r(serialized_signature);
   String s = find_s(serialized_signature);

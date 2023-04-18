@@ -1,17 +1,18 @@
 #include "RpcRequest.h"
-#include "env.h"
 #include <WiFi.h>
 #include <ArduinoHttpClient.h>
 #include <ArduinoJson.h>
 
-const char server[] = HOST;
-const int port = PORT;
+// insert the Ethereum node and the port
+const char server[] = /* Ethereum node */;
+const int port = /* port */;
 
 WiFiClient wifi;
-HttpClient http = HttpClient(wifi, server, port);
+HttpClient http = HttpClient(wifi,server,port);
+
 
 String sendRequest(String params) {
-
+  
   http.beginRequest();
   http.post("/");
   http.sendHeader("Content-Type", "application/json");
@@ -22,7 +23,7 @@ String sendRequest(String params) {
 
   int statusCode = http.responseStatusCode();
   String response = http.responseBody();
-
+  
   if (statusCode != 200) {
     Serial.print("Error with code: ");
     Serial.println(statusCode);
@@ -30,11 +31,11 @@ String sendRequest(String params) {
     return response;
   } else {
     char _response[response.length()];
-    response.toCharArray(_response, response.length() + 1);
+    response.toCharArray(_response, response.length()+1);
 
     StaticJsonDocument<1024> out;
     deserializeJson(out, _response);
-
+    
     String result = out["result"];
 
     if (result == "null") {
@@ -49,22 +50,21 @@ String sendRequest(String params) {
 
 
 String sendRawTransaction(String tx) {
-  
-  DynamicJsonDocument doc(ESP.getMaxAllocHeap());
+
+  StaticJsonDocument<1024> doc;
   doc["jsonrpc"] = "2.0";
   doc["method"] = "eth_sendRawTransaction";
   doc["params"][0] = tx;
   doc["id"] = 1;
-  
 
   String jsonParams;
   serializeJson(doc, jsonParams);
-  
   Serial.print("JsonParams: ");
   Serial.println(jsonParams);
-
+  
   String txHash = sendRequest(jsonParams);
-  return txHash;
+
+  return txHash;  
 }
 
 
@@ -83,7 +83,7 @@ String getNonce(String address) {
   Serial.println(jsonParams);
 
   String nonce = sendRequest(jsonParams);
-
+  
   if (nonce.charAt(2) == '0') {
     nonce = "0x";
   }
@@ -109,12 +109,12 @@ String getGasLimit() {
   String blockInfo = sendRequest(jsonParams);
 
   char _blockInfo[blockInfo.length()];
-  blockInfo.toCharArray(_blockInfo, blockInfo.length() + 1);
+  blockInfo.toCharArray(_blockInfo, blockInfo.length()+1);
 
   StaticJsonDocument<1024> out;
   deserializeJson(out, _blockInfo);
-
-  const char* _gasLimit = out["gasLimit"];
+  
+  const char* _gasLimit = out["gasLimit"]; 
 
   return String(_gasLimit);
 }

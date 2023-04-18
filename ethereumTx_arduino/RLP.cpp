@@ -4,15 +4,15 @@
 
 String rlpEncodeTx(Tx* tx) {
   String serialized;
-  serialized = hexToRlp(tx->nonce) +
-               hexToRlp(tx->gasPrice) +
-               hexToRlp(tx->gasLimit) +
-               hexToRlp(tx->to) +
-               hexToRlp(tx->value) +
-               hexToRlp(tx->data) +
-               hexToRlp(tx->v) +
-               hexToRlp(tx->r) +
-               hexToRlp(tx->s);
+    serialized = hexToRlp(tx->nonce) +
+                hexToRlp(tx->gasPrice) +
+                hexToRlp(tx->gasLimit) +
+                hexToRlp(tx->to) +
+                hexToRlp(tx->value) +
+                hexToRlp(tx->data) +
+                hexToRlp(tx->v) +
+                hexToRlp(tx->r) +
+                hexToRlp(tx->s);                      
   int serializedLength = bytesLength(serialized);
   if (serializedLength <= 55) {
     char temp = 192 + serializedLength;
@@ -53,10 +53,6 @@ String rlp_encode(String input) {
 
 String encodeLength(String input, int offset) {
   int length = bytesLength(input);
-  String lengthInHex = String(length, HEX);
-  if ((lengthInHex.length() % 2) != 0) {
-    lengthInHex = '0' + lengthInHex;
-  }
   if (length < 56) {
     char myChar = length + offset;
     String result = String(myChar, HEX);
@@ -65,11 +61,13 @@ String encodeLength(String input, int offset) {
     } else {
       return result;
     }
-  } else if (length < pow(256, 8)) {
-    int bytesLength = lengthInHex.length() / 2;
+  } else if (length < pow(256,8)) {
+    String hexLength = String(length, HEX); 
+    int bytesLength = hexLength.length() / 2;
     char temp = bytesLength + offset + 55;
     String toString = String(temp, HEX);
-    String output = toString + lengthInHex;
+    String stringLen = String(length, HEX);
+    String output = toString + stringLen;
     if ((input.length() % 2) != 0) {
       return output + '0';
     }
