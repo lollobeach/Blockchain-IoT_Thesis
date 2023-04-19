@@ -6,6 +6,8 @@ The work was carried out in collaboration with *BilancioCO2 Zero*, a Unicam spin
 It is complementary to that of Riccardo Petracci, a fellow magistral that has developed an IoT device that records the various GPS informations and uploads it to a Database.
 What was missing was the development of an Arduino library to send tracking data (latitude, longitude, altitude, unixtime, device id and box fish id) to the Blockchain and of a *Smart Contract* that receive these to uploads them to this protocol.
 
+In this branch you can find the last version of the project where the Smart Contract, instead to receive several `bytes32`, will receive only a `bytes` data type. This data will be an hexadecimal string of a *JSON* string that contains all the tracks made by a device in one day. The difference with the first version (which is in the `first_version` branch) is that only one transaction needs to be sent becaues the JSON string is updated every time that the device tracks a new box fish and at the end of the job the string will be sent to the Blockchain.
+
 ## Technologies used
 
 ### Blockchain side:
@@ -33,6 +35,8 @@ ___
 
 For privacy reason the sensitive data have been removed, so in order to use the Arduino library the code must be modified adding the missing information.
 
+For privacy reason the sensitive data have been removed, so in order to use the Arduino library the code must be modified adding the missing information.
+
 - In [Credentials.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/Credentials.cpp) you must add:
 
 the `ssid` and `password` in `connectWPA2()`;
@@ -52,45 +56,39 @@ or the `ssid`, `password` and `username` in `connectWPA2Enterprise()`.
 
 - In [RawTransaction.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/RawTransaction.cpp) it is necessary to add:
 
-the `public address` in `String createRawTransaction(String data, String privateKey)`. The public address must match the `privateKey`;
+the `WALLET_ADDRESS` in `String createRawTransaction(String data, String privateKey)`. The wallet address must match the `privateKey`;
 
 ```
-  String nonce = getNonce(/* public address */);
+  String nonce = getNonce(WALLET_ADDRESS);
 ```
 
-the `contract address` and `Chain Id` must also be added in this method;
+the `CONTRACT_ADDRESS` and `CHAIN_ID` must also be added in this method;
 
 ```
-  Tx tx = {nonce, "0x", gasLimit, /* contract address */, "0x", data, /* Chain ID */, "0x", "0x"};
-```
-
-in `String ecdsaSignature(String hash, String privateKey, Tx* tx)`, instead, it is sufficient to set the `Chain ID`.
-
-```
-  int _v = /* Chain ID */ * 2 + 35 + recid;
+  Tx tx = {nonce, "0x", gasLimit, CONTRACT_ADDRESS, "0x", data, String(CHAIN_ID, HEX), "0x", "0x"};
 ```
 
 - In [RpcRequest.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/RpcReqeust.cpp):
 
-it's good to enter the `Ethereum node` and the `port` to which send Json-RPC request.
+it's good to enter the *Ethereum node* (`HOST`) and the `PORT` to which send Json-RPC request.
 
 ```
-  const char server[] = /* Ethereum node */;
-  const int port = /* port */;
+  const char server[] = HOST;
+  const int port = PORT;
 ```
 
 - At the end you must modified the file [ethereumTx_arduino.ino](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/ethereumTx_arduino.ino):
 
-first you have to connect the board to WiFi with `connectWPA2()` or `connectWPA2Enterprise()` and then create the `dataField` with information needed.
+first you have to connect the board to WiFi with `connectWPA2Mobile()` or `connectWPA2Home()` and then create the `dataField` with JSON needed.
 
 ```
-  String dataField = createDataField(/* latitude, longitude, altitude, unixTime, device, fishCode, date */);
+  String dataField = createDataField(/* json data */);
 ```
 
-This variable, with the `private key` is used to create the raw transaction
+This variable, with the `PRIVATE_KEY` is used to create the raw transaction
 
 ```
-  String rawTx = createRawTransaction(dataField, /* insert own private key */);
+  String rawTx = createRawTransaction(dataField, PRIVATE_KEY);
 ```
 
 to be sent with `sendRawTransaction(rawTx)` that return the transaction hash if there isn't problems.
@@ -100,23 +98,14 @@ ___
 For testing with `web3.js` it is necessary to edit the [.env](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/besuDeploy/.env) file:
 
 ```
-  HOST=#ethereum_node
-
-  CONTRACT_ADDRESS=#contract_address
-
-  ADMIN_KEY=#private_key_admin
-  FIRST_DEVICE=#private_key_firstDevice
-  SECOND_DEVICE=#private_key_secondDevice
+  BESU_NODE=#ethereum node
+  PRIVATE_KEY=#own private key
+  CONTRACT_ADDRESS=#contract address
+  ADMIN_SECRET_KEY=#adim private key
 ```
 
-`FIRST_DEVICE` and `SECOND_DEVICE` are the device added for the tracking with:
+The `ADMIN_SECRET_KEY` must match the public address in the method `addDevice(bytes32 _idDevice, address _deviceAddress)` of the Solidity [Smart Contract](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/besuDeploy/contracts/Traceability.sol):
 
 ```
-  const tx = contract.methods.addDevice(index, /* public address of the device to be added */)
-```
-
-The `ADMIN_KEY` must match the public address in the method `addDevice(bytes32 _idDevice, address _deviceAddress)` of the Solidity [Smart Contract](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/besuDeploy/contracts/Traceability.sol):
-
-```
-  require(msg.sender == /* Admin public address */, "Only admin can add addresses");
+  require(msg.sender == /* wallet address of admin */, "Only admin can add addresses");
 ```
