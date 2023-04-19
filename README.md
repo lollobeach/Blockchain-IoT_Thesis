@@ -33,7 +33,7 @@ ___
 
 For privacy reason the sensitive data have been removed, so in order to use the Arduino library the code must be modified adding the missing information.
 
-- In [Credentials.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/Credentials.cpp) you must add:
+- In [Credentials.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/first_version/ethereumTx_arduino/Credentials.cpp) you must add:
 
 the `ssid` and `password` in `connectWPA2()`;
 
@@ -50,7 +50,7 @@ or the `ssid`, `password` and `username` in `connectWPA2Enterprise()`.
   const char* password = "";
 ```
 
-- In [RawTransaction.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/RawTransaction.cpp) it is necessary to add:
+- In [RawTransaction.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/first_version/ethereumTx_arduino/RawTransaction.cpp) it is necessary to add:
 
 the `public address` in `String createRawTransaction(String data, String privateKey)`. The public address must match the `privateKey`;
 
@@ -70,7 +70,7 @@ in `String ecdsaSignature(String hash, String privateKey, Tx* tx)`, instead, it 
   int _v = /* Chain ID */ * 2 + 35 + recid;
 ```
 
-- In [RpcRequest.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/RpcReqeust.cpp):
+- In [RpcRequest.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/first_version/ethereumTx_arduino/RpcReqeust.cpp):
 
 it's good to enter the `Ethereum node` and the `port` to which send Json-RPC request.
 
@@ -79,7 +79,7 @@ it's good to enter the `Ethereum node` and the `port` to which send Json-RPC req
   const int port = /* port */;
 ```
 
-- At the end you must modified the file [ethereumTx_arduino.ino](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/ethereumTx_arduino.ino):
+- At the end you must modified the file [ethereumTx_arduino.ino](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/first_version/ethereumTx_arduino/ethereumTx_arduino.ino):
 
 first you have to connect the board to WiFi with `connectWPA2()` or `connectWPA2Enterprise()` and then create the `dataField` with information needed.
 
@@ -97,7 +97,7 @@ to be sent with `sendRawTransaction(rawTx)` that return the transaction hash if 
 
 ___
 
-For testing with `web3.js` it is necessary to edit the [.env](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/besuDeploy/.env) file:
+For testing with `web3.js` it is necessary to edit the [.env](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/first_version/besuDeploy/.env) file:
 
 ```
   HOST=#ethereum_node
@@ -115,7 +115,7 @@ For testing with `web3.js` it is necessary to edit the [.env](https://github.com
   const tx = contract.methods.addDevice(index, /* public address of the device to be added */)
 ```
 
-The `ADMIN_KEY` must match the public address in the method `addDevice(bytes32 _idDevice, address _deviceAddress)` of the Solidity [Smart Contract](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/besuDeploy/contracts/Traceability.sol):
+The `ADMIN_KEY` must match the public address in the method `addDevice(bytes32 _idDevice, address _deviceAddress)` of the Solidity [Smart Contract](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/first_version/besuDeploy/contracts/Traceability.sol):
 
 ```
   require(msg.sender == /* Admin public address */, "Only admin can add addresses");
