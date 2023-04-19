@@ -8,22 +8,26 @@
  * Method for Contract ABI encoding of GPS data.
  * 
  * Input:
- *  - String latitude, latitude to be encoded
- *  - String longitude, longitude to be encoded
- *  - String altitude, altitude to be encoded
- *  - String unixTime, unixTIme to be encoded
- *  - String device, device Id to be encoded
- *  - String fishCode, fish box Id to be encoded 
- *  - String date, date in format gg/mm/yyyy to be encoded
+ *  - String jsonData, a JSON string that contains all informations
  * 
  * Output:
  *  - String, the data paramater to be added to the raw transaction
 */
-String createDataField(String latitude, String longitude, String altitude, String unixTime, String device, String fishCode, String date);
+String createDataField(String jsonData);
 
 /**
- * Method to convert an input string in an hexadecimal string of 32 bytes for ABI encode.
- * The length of the result is 64 characters, two characters for each byte.
+ * Method to add offset according to Contract ABI Specification
+ * 
+ * Input:
+ *  - String input, it corresponds to the input of 'createDataField()' method
+ *
+ * Output:
+ * - String, the data with offset
+*/
+String addOffset(String input):
+
+/**
+ * Method to convert an input string in an hexadecimal string for ABI encode.
  * 
  * Input:
  *  - String input, message to be converted
@@ -31,6 +35,19 @@ String createDataField(String latitude, String longitude, String altitude, Strin
  * Output:
  *  - String, message converted
 */
-String stringToHex64(String input);
+String stringToHex(String input);
+
+/**
+* Method that returns the length of string in hex according to the
+* Contract Abi Specification
+*
+* Input:
+*  - int length, length in bytes of the input of 'createDataFieldMethod()'
+*       converted in bytes
+*
+* Output:
+* - String, bytes length of input with hexadecimal rapresentation
+*/
+String stringLengthToHex(int length);
 
 #endif

@@ -10,7 +10,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
 
-  connectWPA2Mobile();
+  connectWPA2();
 
   String dataField = createDataField(/* json data */);
 

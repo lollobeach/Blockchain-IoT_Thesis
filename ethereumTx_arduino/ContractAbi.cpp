@@ -17,6 +17,18 @@ String createDataField(String data) {
   return "0x" + methodSignature + locationData + bytesLength + bytesData;
 }
 
+String addOffset(String input) {
+  String output = stringToHex(input);
+  int outputLength = output.length();
+  if (outputLength < 64) {
+    int offset = 64 - outputLength;
+    for (int i = 0; i < offset; i++) {
+      output += '0';
+    }
+  }
+  return output;
+}
+
 String stringToHex(String input) {
   String output;
   for (int i = 0; i < input.length(); i++) {
@@ -37,16 +49,4 @@ String stringLengthToHex(int length) {
     lengthInHex = offsetString + lengthInHex;
   }
   return lengthInHex;
-}
-
-String addOffset(String input) {
-  String output = stringToHex(input);
-  int outputLength = output.length();
-  if (outputLength < 64) {
-    int offset = 64 - outputLength;
-    for (int i = 0; i < offset; i++) {
-      output += '0';
-    }
-  }
-  return output;
 }
