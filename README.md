@@ -35,12 +35,22 @@ ___
 
 For privacy reason the sensitive data have been removed, so in order to use the Arduino library the code must be modified adding the missing information.
 
+For privacy reason the sensitive data have been removed, so in order to use the Arduino library the code must be modified adding the missing information.
+
 - In [Credentials.cpp](https://github.com/lollobeach/Blockchain-IoT_Thesis/blob/master/ethereumTx_arduino/Credentials.cpp) you must add:
 
-the `ssid` and `password` in `connectWPA2Mobile()` or `connectWPA2Home()`;
+the `ssid` and `password` in `connectWPA2()`;
 
 ```
   const char* ssid = "";
+  const char* password = "";
+```
+
+or the `ssid`, `password` and `username` in `connectWPA2Enterprise()`.
+
+```
+  const char* ssid = "";
+  const char* username = "";
   const char* password = "";
 ```
 
